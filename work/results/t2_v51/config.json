@@ -1,0 +1,71 @@
+{
+  "selected_on": "March (validation) pseudo windows only, fine-tuned members cross-fitted by half month (t2_grid_april.py); for the April windows only",
+  "weights": {
+    "ml2g0": 0,
+    "ml2ft": 0,
+    "cnng0": 0,
+    "rnng0": 0,
+    "rnn2": 0,
+    "rnnft": 4,
+    "cnnft": 0,
+    "rnnftx": 2,
+    "cnnftx": 4,
+    "cat": 0
+  },
+  "v48": {
+    "ml2g0": 2,
+    "ml2ft": 0,
+    "cnng0": 1,
+    "rnng0": 5,
+    "rnn2": 2,
+    "rnnft": 0,
+    "cnnft": 0,
+    "rnnftx": 0,
+    "cnnftx": 0,
+    "cat": 0.25
+  },
+  "v50": {
+    "ml2g0": 0,
+    "ml2ft": 0,
+    "cnng0": 0,
+    "rnng0": 0,
+    "rnn2": 0,
+    "rnnft": 3,
+    "cnnft": 1,
+    "rnnftx": 0,
+    "cnnftx": 0,
+    "cat": 0
+  },
+  "families": {
+    "cnnftx": [
+      "cnnft_1",
+      "cnnft_2"
+    ],
+    "rnnftx": [
+      "rnnft_2",
+      "rnnft_3"
+    ],
+    "cnnft": [
+      "cnnft_0"
+    ],
+    "rnnft": [
+      "rnnft_0",
+      "rnnft_1"
+    ]
+  },
+  "pseudo_validation": {
+    "all": 0.9224132803292823,
+    "early": 0.9330289434385437,
+    "late": 0.9144027267707948
+  },
+  "pseudo_validation_v48": {
+    "all": 0.9014284696326422,
+    "early": 0.909182965013048,
+    "late": 0.89476281799737
+  },
+  "pseudo_validation_v50": {
+    "all": 0.9197470851919556,
+    "early": 0.9309939048095235,
+    "late": 0.9111717225998047
+  }
+}

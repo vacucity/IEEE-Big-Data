@@ -1,0 +1,17 @@
+{
+  "all_audit_files_match": true,
+  "files": {
+    "official_gate_windows_audit.csv": {
+      "matches_original_ignoring_line_endings": true,
+      "sha256_lf": "7bdb1bb7a5c5c3e93ff5a1403a1d9458b2a168d401a0c8c64a613be17623a0f7"
+    },
+    "official_gate_cells_audit.csv": {
+      "matches_original_ignoring_line_endings": true,
+      "sha256_lf": "f4552b68fb41e09bb3431e765f72a9221f8293e34baf0e000fbebb22f63c42a6"
+    },
+    "official_gate_summary.json": {
+      "matches_original_ignoring_line_endings": true,
+      "sha256_lf": "3859d082aa054411ac802e0681407d258cf7995f41a9b291ccab6b1df2c12d68"
+    }
+  }
+}

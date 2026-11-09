@@ -1,0 +1,16 @@
+# TrafficFlowBench final package (team vacucity) - exact pins of the development environment (work/ENVIRONMENT.txt)
+# Python 3.11.5 (Anaconda, Windows 11 x64); GPU stages: CUDA 12.1 + cuDNN 9.1, a bf16-capable GPU (RTX 4070 Laptop)
+#   pip install -r work/requirements.txt
+# torch 2.5.1 is the CUDA 12.1 build from the PyTorch cu121 index (next line); PyPI alone gives a CPU build on Windows.
+--extra-index-url https://download.pytorch.org/whl/cu121
+numpy==1.26.4
+pandas==2.0.3
+pyarrow==22.0.0
+scipy==1.10.1
+scikit-learn==1.7.2
+lightgbm==4.6.0
+catboost==1.2.8
+xgboost==2.1.3          # imported at module level by task2_ml.py (and so by the whole Task 2 chain)
+torch==2.5.1+cu121
+# optional: figures only, no stage needs it
+# matplotlib==3.10.8

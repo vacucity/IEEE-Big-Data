@@ -1,0 +1,19 @@
+{
+  "threshold": 0.0005,
+  "selected": [
+    "D7_I10_W",
+    "D7_I405_N",
+    "D7_I405_S",
+    "D12_I5_N",
+    "D12_I405_N"
+  ],
+  "gains": {
+    "D7_I10_W": 0.0006475410051518526,
+    "D7_I210_E": 0.00034785236038037404,
+    "D7_I405_N": 0.0005901517021379421,
+    "D7_I405_S": 0.0007937761209870775,
+    "D12_I5_N": 0.0009663177429393155,
+    "D12_I405_N": 0.0014504169983076132
+  },
+  "confirmation_rule": "retain a selected panel only if alpha=1 has positive private-visible state proxy gain"
+}

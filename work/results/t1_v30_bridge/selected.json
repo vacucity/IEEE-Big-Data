@@ -1,0 +1,31 @@
+{
+  "alpha": 1.0,
+  "panels": [
+    "D12_I405_S",
+    "D7_I210_W",
+    "D12_I5_S",
+    "D7_I10_E"
+  ],
+  "private_confirmation_passed": true,
+  "checks": {
+    "validation": {
+      "D12_I405_S": 0.001091252573496404,
+      "D7_I210_W": 0.001207866508465938,
+      "D12_I5_S": 0.0012773425343524103,
+      "D7_I10_E": 0.0009096899863778596
+    },
+    "private": {
+      "D12_I405_S": 0.0002659828087825389,
+      "D7_I210_W": 0.001417990837005445,
+      "D12_I5_S": 0.0010470989276636367,
+      "D7_I10_E": 0.0006382149215723443
+    }
+  },
+  "stack_models": {
+    "v": "ea44110dd0859b597dbd43924063b5714d281f1531cfc6cdc88e858dbc2ae8f8",
+    "q": "655c7212ee7340c80aade6a4897a380db51a9715cc41807040fee58a98dd4528",
+    "k": "7e771ece44ce6cd1153caf12a1851e696559c201660234f1faeac7e4a3b4019c"
+  },
+  "protocol_sha256": "3f479f50f5c7ca53d014f82cb1580825da0f002454b0a64c76e7c10b84910320",
+  "visibility": "five spaced odd days per panel; four-panel matched architecture; production labels not read"
+}

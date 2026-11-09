@@ -1,0 +1,22 @@
+{
+  "scope": "8 panels x 5 ongoing windows x 2 splits; not onset; no official labels/scores; no file submission",
+  "by_split": {
+    "private": {
+      "ungated_official_changes": 3,
+      "gated_official_changes": 2
+    },
+    "validation": {
+      "ungated_official_changes": 9,
+      "gated_official_changes": 8
+    }
+  },
+  "windows_with_ungated": {
+    "private": 3,
+    "validation": 4
+  },
+  "windows_with_gate": {
+    "private": 2,
+    "validation": 4
+  },
+  "modified_windows_with_cpu_replay_mismatch": 0
+}

@@ -1,0 +1,59 @@
+{
+  "written": "2026-10-22 00:41:41",
+  "docstring": "V61 lane B3: second round on the Task-1 target cells INSIDE official Task-2 blackouts (the 128,465 state rows that\nV60 = work/submissions/v60_loc_blk.zip took from V59_blk).  Only those rows may change against V60; every other state\nrow, every queue row and every ODME row stays byte-identical.\n\nPRE-REGISTERED (this docstring is frozen into results/t1_v61_blk3/prereg.json by `prereg` BEFORE any number of this\nlane is computed; `crossfit` refuses to run if the docstring changed afterwards):\n  ruler      the V57 ruler exactly as V59 used it: the 977 simulated official-like blackouts on the March / April visible\n             layers (results/t1_v57_blkruler), the real-frame emulation of t1_v57_blackout (window_sums / real_frame /\n             deltas: official blackout target counts, condition mix, mask rates), dTotal = 0.35 dS_state +\n             0.15 dS_phys(est) against the production fill, family mean over the ten corridors (D12_I405_* = 0)\n  reference  S2 = V59_blk = phase-A specialist + residual GBM, lambda (0.625, 0.5); its day-parity cross-fitted ruler\n             fill results/t1_v59_blkspec/crossfit_chosen_fill.npz (re-evaluated here; must reproduce the S2 rows of\n             crossfit_corridors.csv)\n  GBMs       every residual GBM: t1_v57_blackout GBM_PARAMS / GBM_ROUNDS (63 leaves, lr .05, 400 rounds, deterministic),\n             day-parity cross-fit pooling both months and all eight T2 corridors (fit parity a, predict parity 1 - a);\n             S2 feature set = t1_v57_blackout.FEATS (computed from the candidate's own U-Net columns) + pv0_r, pq0_l\n             (production fill) + dsp_v_r, dsp_q_l (candidate U-Net mean - production); fill = base + lambda * residual\n  lambda     for E2..E5 the V57 rule on LAM_V x LAM_Q: eligible = family dTotal > 0 and dS > 0 in both months and\n             dTotal > 0 in >= 7/8 corridors per month; pick the smallest lambda_v, then lambda_q, among the eligible\n             configurations within 95% of the best eligible mean-over-months dTotal; no eligible configuration ->\n             the candidate drops out\n  candidates fixed set (nothing else is evaluated for selection):\n    E1  0.5 x S2 fill + 0.5 x S4 fill (speed and flow).  S4 = S4_v0.5_q0.0 of V59 phase B (the V57-rule pick in\n        crossfit_ss_choice.json: month-self-supervised nets of the other day parity + residual GBM with the S2 feature\n        set, lambda (0.5, 0.0)); its cross-fitted fill is recomputed here and must reproduce the S4_v0.5_q0.0 rows of\n        crossfit_ss_corridors.csv.  No free parameter.\n    E2  base = phase-A specialist mean (as S2); residual GBM with the S2 feature set + SS_FEATS = dss_v_r =\n        (pv_ss - pv_spec) / ffs, dss_q_l = (pq_ss - pq_spec) / lanes (pv_ss / pq_ss = S3, the self-supervised nets of\n        the other day parity); lambda by the V57 rule.\n    E3  8-net specialist: the 4 phase-A nets + 4 new nets \"s1\" trained with the phase-A recipe (train_runs.csv of\n        t1_v59_blkspec, fold months, 8 epochs, lr 2e-4 OneCycle pct .1 div 10/10, AdamW wd 1e-4, batch 4, P_FULL .5,\n        W_OTHER .2, lwr .05 for the lwr tag, bf16) with new seeds (61 + 10 fold + tag index).  Fix of the V59 OneCycle\n        total-steps bug: every epoch's batch list is drawn up front from its own rng, total_steps = their exact count.\n        Per-net columns averaged over the seeds (fold columns = mean over seeds of that fold, tag = mean of folds,\n        pv / pq = mean of tags); S2 feature set from the ensemble; lambda by the V57 rule.\n    E4  as E3, but the 4 new nets \"ext\" (seeds 62 + 10 fold + tag index) are trained on an enlarged train-gap sample:\n        the replica selector (t2_v52_replica.Timeline rules on the train truth layer, cap 5, onset rule not_est) run\n        as greedy forward passes from slot s*288 + o for every start day s and o in OFFSETS = 0, 48, 96, 144, 192, 240\n        (the original windows.csv used o = 0 only); unique (panel, day, T, cond) origins with 12 <= T <= 269; all\n        original gaps kept, new gaps drawn uniformly at random (seed 61) up to EXT_FACTOR = 2 x the original count;\n        packed per day into runs (gaps >= 48 slots apart) as t1_v59_blkspec.pack; same 8 epochs.\n    E5  12-net specialist: phase-A + s1 + ext nets; rest as E3.\n  win rule   (same as V59 phase B, reference S2): a candidate wins iff in BOTH months its family dTotal > S2's AND its\n             corridor dTotal > S2's in >= 7 of the 8 T2 corridors in each month\n  choice     winners in decreasing mean-over-months family dTotal; the first one whose block-halves cross-fit\n             (GBMs fitted on days < 15 vs >= 15; S2 refitted the same way; E1 = mean of the block-halves S2 and S4\n             fills) gain over S2 is > 0 in both months is chosen.  No winner (or none passes) -> nothing is built.\n             The rule is not relaxed after seeing numbers.\n  report     (not used for the choice) bootstrap of 5 onset + 5 ongoing windows per corridor-month vs S2 (300 draws),\n             MSE by condition, per corridor-month dS_state (measured, simulation protocol) and dS_phys / dTotal\n             (estimated), train held-out RMSE of the new nets (official layout)\n  packaging  official windows: the chosen candidate's nets on the official blackout days (other-parity ss nets as in\n             V59 phase B), GBM(s) refitted on all ruler rows of both months; start from the state rows of V60\n             (v60_loc_blk.zip), replace ONLY the Task-1 targets inside official Task-2 blackouts (%.6g); state-only zip\n             v61b3_state.zip on the v51_april.zip base (t1_v52_monthbias package/audit code, names patched); then\n             build_queue_candidate.py --name v61_b3 with the V54 onset queues; line-by-line comparison with V60.\n\nSteps (project root, anaconda python; nothing existing is overwritten - FileExistsError):\n  prereg                          freeze this docstring\n  runs_ext                        E4 enlarged train-gap sample -> results/t1_v61_blk3/cache/train_runs_ext.csv\n  train --set s1|ext --tag T --fold k        -> work/models/t1_unet_fold{k}{T}_v61b3_{set}.pt\n  wide --set s1|ext --split S     ruler outputs of the new nets (rows/cells of t1_v59_blkspec wide)\n  official --set s1|ext           official-window outputs of the new nets\n  crossfit                        the pre-registered comparison -> crossfit_{summary,corridors}.csv, crossfit_choice.json\n  heldout                         report only: train held-out months, official layout\n  fit / apply / package / audit / compare     only if crossfit chose a candidate\n\nRules: Task 1 is offline.  Inputs: train-month truth (training only), the visible observations of March / April\n(ruler labels, GBM fitting, the V59 self-supervised nets), the public window_index.csv (origin + condition), frozen\nproduction / V59 models.  No hidden label of March / April, no Task-2 prediction, no public-LB feedback.\n",
+  "docstring_sha256": "00bff580f6fc8e669eac699a9f1b39883b5b4e8cd16a5ff5d5fcea38f06e3638",
+  "constants": {
+    "OFFSETS": [
+      0,
+      48,
+      96,
+      144,
+      192,
+      240
+    ],
+    "EXT_FACTOR": 2.0,
+    "EXT_SEED": 61,
+    "SETS": {
+      "s1": {
+        "seed": 61,
+        "runs": "phase_a"
+      },
+      "ext": {
+        "seed": 62,
+        "runs": "ext"
+      }
+    },
+    "SS_FEATS": [
+      "dss_v_r",
+      "dss_q_l"
+    ],
+    "REF_CFG": "S2_v0.625_q0.5",
+    "REF_LAM": [
+      0.625,
+      0.5
+    ],
+    "S4_CFG": "S4_v0.5_q0.0",
+    "S4_LAM": [
+      0.5,
+      0.0
+    ],
+    "CANDS": {
+      "E1": null,
+      "E2": null,
+      "E3": [
+        "A",
+        "s1"
+      ],
+      "E4": [
+        "A",
+        "ext"
+      ],
+      "E5": [
+        "A",
+        "s1",
+        "ext"
+      ]
+    }
+  },
+  "note": "written before any number of lane B3 was computed"
+}

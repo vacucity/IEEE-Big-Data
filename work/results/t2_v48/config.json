@@ -1,0 +1,9 @@
+{
+  "selected_on": "validation pseudo windows only (results/t2_v48_grid.csv); private printed for information",
+  "specs": ["cnng0_0:cnn:_g0", "cnng0_1:cnn:_g0_s1", "cnng0_2:cnn:_g0_s2", "rnng0_0:rnn:_g0", "rnng0_1:rnn:_g0_s1"],
+  "members": [["ml2g0", 2], ["cnng0", 1], ["rnng0", 5], ["rnn2", 2]],
+  "cat": "g0",
+  "cat_alpha": {},
+  "cat_alpha_default": 0.25,
+  "pseudo": {"validation": [0.9005, 0.9014], "private": [0.8972, 0.8974]}
+}

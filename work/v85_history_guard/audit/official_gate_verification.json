@@ -1,0 +1,6 @@
+{
+  "window_count_and_thresholds": "pass",
+  "target_panel_prior_audit_match": "pass",
+  "all_12_cached_keys_match_original_v84_zip": "pass",
+  "scope": "read-only mapping and math checks, does not test official prediction quality"
+}

@@ -1,0 +1,11 @@
+candidate,submission_id,split,panel,window_id,timestamp,link_id,before,after
+V85_history_guard,6796242,private,D7_I10_E,Q2_D7_I10_E_private_010,2031-04-06 15:05:00+00:00,L10E-243,0,1
+V85_history_guard,6849054,validation,D7_I210_W,Q2_D7_I210_W_validation_009,2031-03-03 12:35:00+00:00,L210W-028,0,1
+V85_history_guard,6870442,validation,D7_I405_N,Q2_D7_I405_N_validation_008,2031-03-03 19:45:00+00:00,L405N-146,0,1
+V85_history_guard,6870897,validation,D7_I405_N,Q2_D7_I405_N_validation_008,2031-03-03 19:50:00+00:00,L405N-251,0,1
+V85_history_guard,6871102,validation,D7_I405_N,Q2_D7_I405_N_validation_008,2031-03-03 19:55:00+00:00,L405N-088,0,1
+V85_history_guard,6871136,validation,D7_I405_N,Q2_D7_I405_N_validation_008,2031-03-03 19:55:00+00:00,L405N-135,0,1
+V85_history_guard,6871318,validation,D7_I405_N,Q2_D7_I405_N_validation_008,2031-03-03 19:55:00+00:00,L405N-361,0,1
+V85_history_guard,6750395,validation,D12_I5_N,Q2_D12_I5_N_validation_010,2031-03-12 14:25:00+00:00,L5N-152,0,1
+V85_history_guard,6770296,validation,D12_I5_S,Q2_D12_I5_S_validation_006,2031-03-01 14:45:00+00:00,L5S-093,0,1
+V85_history_guard,6778154,private,D12_I5_S,Q2_D12_I5_S_private_009,2031-04-04 14:00:00+00:00,L5S-278,0,1

@@ -1,0 +1,24 @@
+{
+  "registered_at": "2026-10-24 12:17:26 -0500",
+  "script": "C:\\Users\\23017\\Desktop\\IEEE Big data\\work\\t1_v66_cmode.py",
+  "script_sha256": "43d5e70ad62422f2368c578d2f064f64f812ebb6ccc80abd7625a5f5359752b7",
+  "rule": {
+    "row_set": "V64 T1 rows with V51 pv > 1.15 v_cut, outside the official T2 blackouts (= V59_loc row set) and real-frame cnt >= 5; only speed_kmh changes",
+    "candidates": {
+      "C1": "wide: v' = clip(v64 + x1'b1, 5, 120.75), x1 = [D1(t-2..t+2), Dw(t-1..t+1)] x {1, db==1, da==1} + const",
+      "C2": "wide+vband: v' = clip(v64 + x1'b1 + x2'b2, 5, 120.75), x2 = 18 speed band means + const, b2 on the in-sample stage-1 residual"
+    },
+    "lambda": 1.0,
+    "fit": "per month, OLS pooled over the 10 corridors, hide cells free & cnt >= 5, target ov - v64; evaluation odd/even-day cross-fit; apply all days",
+    "gates_each_month": {
+      "G1": "family dS_rw > 0",
+      "G2": ">= 9/10 corridors dS > 0",
+      "G3": "family dTotal40 = 0.35 dS + 0.15 (dFD_est - 0.8 dE_est)/3 > 0",
+      "G4": "apply: real-frame S_FD change (family mean) >= -0.0005"
+    },
+    "choice": "C2 if C2 passes G1-G3 and in both months dS(C2)-dS(C1) >= 5e-5 and dE_est(C2) <= dE_est(C1); else C1 if C1 passes G1-G3; else not built.  G4 failure: C2 -> C1 if C1 passed G1-G3 (re-check G4); else not built",
+    "addon": "after CM on the same row set: v <= 101.2 on the train-cap-101.2 links; v >= q/k_jam where q/v > k_jam (the 7 V64 rows with q/v > k_jam are outside R and stay unchanged)",
+    "never": "public LB, Task 2 data other than the public blackout flag, other-month data"
+  },
+  "note": "written before any check run of this script; the rule is also in the docstring"
+}

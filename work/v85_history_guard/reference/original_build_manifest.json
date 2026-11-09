@@ -1,0 +1,24 @@
+{
+  "original_sha256": "a429599ade6ee8663b28f850f86acc0819ba426d2b2f9cc0861b2831edc36090",
+  "rows": 6980503,
+  "candidates": {
+    "V85_history_guard": {
+      "sha256": "b594280f0bbe313d6e8bf45cffcb924099a41d95c647fad5f327ef5399c643a5",
+      "zip_bytes": 62146516,
+      "changes_by_split": {
+        "validation": 8,
+        "private": 2
+      },
+      "changes": 10
+    },
+    "V86_spacetime_guard": {
+      "sha256": "9e1ba0523c88b6ad70aeccf95c41e64a3c1639558c9c4a555867c75fc7cf1867",
+      "zip_bytes": 62146520,
+      "changes_by_split": {
+        "validation": 62,
+        "private": 32
+      },
+      "changes": 94
+    }
+  }
+}

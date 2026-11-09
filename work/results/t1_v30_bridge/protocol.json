@@ -1,0 +1,16 @@
+{
+  "seed": 30541,
+  "adaptation_day_index_parity": 0,
+  "evaluation_day_index_parity": 1,
+  "adaptation_epochs": 6,
+  "adaptation_lr": 0.0002,
+  "extra_hide_rate": 0.2,
+  "base": "full GBM plus two-fold w48 and two-fold w48lwr; each U-Net freshly month-adapted on even days only",
+  "selection": "fixed train-OOF selected vqk_1; vqk_0.5 predeclared conservative alternative; validation then private confirmation",
+  "stack_models": {
+    "v": "ea44110dd0859b597dbd43924063b5714d281f1531cfc6cdc88e858dbc2ae8f8",
+    "q": "655c7212ee7340c80aade6a4897a380db51a9715cc41807040fee58a98dd4528",
+    "k": "7e771ece44ce6cd1153caf12a1851e696559c201660234f1faeac7e4a3b4019c"
+  },
+  "caveat": "Artificial hidden visible cells proxy; no actual official T1 target labels are read. Matched four-model architecture, but half-day adaptation differs from full production adaptation."
+}

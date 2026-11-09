@@ -1,0 +1,59 @@
+{
+  "D7_I210_W": {
+    "rule": "ml2:block",
+    "train_gain": 0.05398179749715586,
+    "train_lo": 0.03578300212779176,
+    "months_better": 9,
+    "months_worse": 0,
+    "march_gain": 0.020833333333333336,
+    "apply_april": true,
+    "passing": [
+      "ml2:block"
+    ]
+  },
+  "D7_I405_S": {
+    "rule": "flow",
+    "train_gain": 0.048888888888888885,
+    "train_lo": 0.014327236577236575,
+    "months_better": 7,
+    "months_worse": 1,
+    "march_gain": 0.0,
+    "apply_april": true,
+    "passing": [
+      "flow",
+      "eiou:flow"
+    ]
+  },
+  "D12_I5_N": {
+    "rule": "cap:t15+JT",
+    "train_gain": 0.03320158102766799,
+    "train_lo": 0.0031746031746031737,
+    "months_better": 6,
+    "months_worse": 2,
+    "march_gain": 0.0,
+    "apply_april": true,
+    "passing": [
+      "cap:t15+JT"
+    ]
+  },
+  "D12_I5_S": {
+    "rule": "cap:t15+J",
+    "train_gain": 0.16936568520537987,
+    "train_lo": 0.11703722867729029,
+    "months_better": 9,
+    "months_worse": 0,
+    "march_gain": 0.038461538461538464,
+    "apply_april": true,
+    "passing": [
+      "cap:t15",
+      "cap:t20",
+      "cap:t15+t60_30",
+      "cap:t60_30+J",
+      "cap:t15+J",
+      "cap:t60_30+JT",
+      "cap:t15+JT",
+      "eiou:cap:t15",
+      "eiou:cap:t60_30+J"
+    ]
+  }
+}

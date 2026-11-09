@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "submission_rows": 6980503,
+  "pre_gate_candidates": 12,
+  "changes": {
+    "validation": 8,
+    "private": 2
+  },
+  "rebuilt_csv_byte_identical_to_official_v85": true,
+  "submission_csv_sha256": "75d1fc8a176ce5d8a1fbef91680da8924f78bcb78b94f8e7bc033da0a58f6504",
+  "archive_crc": "PASS"
+}

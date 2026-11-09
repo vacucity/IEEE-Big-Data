@@ -1,0 +1,41 @@
+{
+  "seed": 30531,
+  "panels": [
+    "D12_I405_S",
+    "D7_I210_W",
+    "D12_I5_S",
+    "D7_I10_E"
+  ],
+  "fit_months": [
+    6,
+    8,
+    10
+  ],
+  "selection_month": 12,
+  "confirmation_month": 2,
+  "base_training_months": [
+    7,
+    9,
+    11,
+    1
+  ],
+  "base_fold": 0,
+  "sample_rate": 0.12,
+  "rounds": 250,
+  "params": {
+    "objective": "regression",
+    "learning_rate": 0.04,
+    "num_leaves": 31,
+    "min_data_in_leaf": 400,
+    "lambda_l2": 10,
+    "feature_fraction": 0.9,
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "num_threads": 2,
+    "verbose": -1,
+    "seed": 30531,
+    "deterministic": true,
+    "force_col_wise": true
+  },
+  "caveat": "T3 uses observed truth dN proxy with oracle context, not official hidden conservation RHS; baseline is non-adapted fold0, not full V28."
+}

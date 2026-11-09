@@ -1,0 +1,24 @@
+{
+  "validation_selected": [
+    "D7_I10_W",
+    "D7_I405_N",
+    "D7_I405_S",
+    "D12_I5_N",
+    "D12_I405_N"
+  ],
+  "private_confirmed": [
+    "D7_I10_W",
+    "D7_I405_N",
+    "D7_I405_S",
+    "D12_I5_N",
+    "D12_I405_N"
+  ],
+  "gains": {
+    "D7_I10_W": 0.0002095732418946339,
+    "D7_I405_N": 0.0005485000777436522,
+    "D7_I405_S": 0.0006145758088809128,
+    "D12_I5_N": 0.0009421338159270043,
+    "D12_I405_N": 0.0008371294325788536
+  },
+  "caveat": "Artificially hidden visible cells are not official hidden targets; no Kaggle score is inferred."
+}

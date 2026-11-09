@@ -1,0 +1,20 @@
+{
+  "panels": [
+    "D7_I10_W",
+    "D7_I210_E",
+    "D7_I405_N",
+    "D7_I405_S",
+    "D12_I5_N",
+    "D12_I405_N"
+  ],
+  "frozen_models": {
+    "v": "ea44110dd0859b597dbd43924063b5714d281f1531cfc6cdc88e858dbc2ae8f8",
+    "q": "655c7212ee7340c80aade6a4897a380db51a9715cc41807040fee58a98dd4528",
+    "k": "7e771ece44ce6cd1153caf12a1851e696559c201660234f1faeac7e4a3b4019c"
+  },
+  "validation_selection_threshold": 0.0005,
+  "alpha": 1.0,
+  "maximum_odd_days_per_panel": 5,
+  "base_protocol": "C:\\Users\\23017\\Desktop\\IEEE Big data\\work\\results\\t1_v30_bridge\\protocol.json",
+  "warning": "Transfer to panels excluded from calibrator training; proxy only; no official hidden truth read."
+}
