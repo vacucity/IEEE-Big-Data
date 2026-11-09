@@ -124,10 +124,13 @@ interruptions excluded): 18.2 h of stage time in total (3.6 h of it in the six G
 placed before V84 existed (now after `t1_v84`), the feature-alignment file that `build_v77.py` reads (now written by
 the new `audit_v77_feature_alignment.py`, whose first version stopped the run once more because it counted NaN in the
 same cells as unequal), and `final` reached before stage `v85` was added. A 6.3 h standby pause inside `merge_v60`
-only delayed the run (excluded from the times above). No stage script was changed after its stage had passed; the
+only delayed the run (excluded from the times above). During the run no stage script was changed after its stage
+had passed; the
 only code files under `work/` that changed after the run began are
 `run_all.py`, `audit_v77_feature_alignment.py` and the scripts of the stages added then, `build_v85_history_guard.py`
-and `build_final_v86_v87.py` (with the hand-off folder `work/v85_history_guard/`). The final files are written to
+and `build_final_v86_v87.py` (with the hand-off folder `work/v85_history_guard/`). After the run, on 9 November, the tolerant mode of
+section 5 changed the checks in seven files (`repro_check.py`, `run_all.py`, `t2_final_queue.py`, `t2_final_ongoing.py`, `t2_v71_april.py`, `build_v85_history_guard.py`, `build_final_v86_v87.py`); the default
+path is unchanged, and the changed steps were re-run in the clean copy (section 5). The final files are written to
 the paths in the table above.
 
 ## 4. What the stages do
@@ -252,6 +255,13 @@ model features built on this layer are described in the report (sections *Task 1
   `final` set the guard cells to their recorded values, and V87 / V86 then differed from the submitted files only
   in the changed V84 cell that lies outside the guard lists, as a flip on another GPU would. The default mode
   stopped at each of these checks. On our GPU no check fires, so both modes give the same files.
+* **A newly generated month.** The organisers also plan to run the Task 2 code of the review pool on a newly
+  generated month. Our Task 2 rules and models are code, but the package is organised around the two competition
+  months: the April members are fine-tuned on March, several stages compare their decisions with those recorded
+  for March and April (`--tolerant` turns these into reported differences), and the two guard change lists
+  address cells of the competition months by submission id, so they do not carry over. We have not run the
+  package on another month; there, the model-built queue rows of V84 are the meaningful Task 2 output, and
+  stages `v85` and `final` do not apply.
 
 ## 6. Random seeds
 
