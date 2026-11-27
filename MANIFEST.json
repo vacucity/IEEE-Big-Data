@@ -1481,8 +1481,8 @@
  },
  {
   "path": "README.md",
-  "bytes": 34524,
-  "sha256": "620af60feb303f0efd38be339e305723f72c7185d1033f174c33725d6d40bf29"
+  "bytes": 35142,
+  "sha256": "8344b1145cd80c0e64df13a55874fe72a5e9828ff159d965d8ed2c327a620200"
  },
  {
   "path": "LICENSE",
@@ -1493,5 +1493,10 @@
   "path": "report/main.pdf",
   "bytes": 996280,
   "sha256": "58797a1ea0009b7b1eff21c57631869b246b3a04d216d3cc6a4aed9cfc02d221"
+ },
+ {
+  "path": "report/leaderboard.png",
+  "bytes": 66245,
+  "sha256": "ff025fef6bc174a8c4f63152e5b142da40cf40b16ac15bb1f377f372a5f0494e"
  }
 ]

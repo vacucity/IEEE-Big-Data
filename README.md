@@ -1,24 +1,34 @@
-# TrafficFlowBench 2026 — team *vacucity* — reproduction package
+# TrafficFlowBench 2026 — 4th place solution — team *vacucity*
 
-This package rebuilds our two final Kaggle submissions for the 2026 IEEE Big Data Cup *TrafficFlowBench*
-from the official data release and the trained models and frozen decision files shipped here.
+Team *vacucity* finished **4th on the private leaderboard** of the 2026 IEEE Big Data Cup *TrafficFlowBench*
+(Kaggle), with a private score of **0.89962**.
 
-| | rebuilt file (submitted as) | SHA-256 | public LB | private LB |
+![Private leaderboard of the 2026 IEEE Big Data Cup TrafficFlowBench: team vacucity ranked 4th with a private score of 0.89962](report/leaderboard.png)
+
+This repository is the reproduction package of that result. It rebuilds our best submission, **V86**, from the
+official data release and the trained models and frozen decision files shipped here. The method, its validation and
+all compliance disclosures are described in the PDF report ([`report/main.pdf`](report/main.pdf), also sent with the
+package e-mail).
+
+## Final submission
+
+| submission | rebuilt file | SHA-256 | public LB | private LB |
 |---|---|---|---|---|
-| **V87** | `work/submissions/v87_combined.zip` (`V87_combined.zip`) | `6bc4e383967c9dbf96d8b343879b8b729436f3118636619bb113bde635e3dff0` | 0.90368 | 0.89956 |
-| **V86** | `work/submissions/v86_spacetime_guard.zip` (`V86_spacetime_guard.zip`) | `9e1ba0523c88b6ad70aeccf95c41e64a3c1639558c9c4a555867c75fc7cf1867` | 0.90359 | 0.89962 |
-| V84 (base, not selected) | `work/submissions/v84_observation_flow.zip` | `a429599ade6ee8663b28f850f86acc0819ba426d2b2f9cc0861b2831edc36090` | 0.90336 | not recorded |
+| **V86** (`V86_spacetime_guard.zip`) | `work/submissions/v86_spacetime_guard.zip` | `9e1ba0523c88b6ad70aeccf95c41e64a3c1639558c9c4a555867c75fc7cf1867` | 0.90359 | **0.89962** (4th) |
 
-V84 is the end of our model chain. V86 and V87 are V84 with Task 2 `queue_pred` cells flipped by two queue guards
-that a team member ran on V84 (no model is retrained): V86 flips the 94 cells of a spatio-temporal guard (62
-validation / 32 private, 18 windows; 63 queued → not queued, 31 not queued → queued); V87 flips those 94 and the 10
-cells of the V85 history guard (8 / 2, all not queued → queued), 104 cells in 20 windows. Each zip holds one member
-`submission.csv` (6,980,503 rows); every other byte of it equals V84's, so the Task 1 and Task 4 rows, and the Task 3
-score computed from Task 1, are those of V84. Scores are from the Kaggle submission page. The guards are described in
-the report, section *Final queue guards*.
+Scores are from the Kaggle submission page.
 
-The method, its validation and all compliance disclosures are described in the PDF report
-(`report/main.pdf`, also sent with the package e-mail).
+* **V84** is the end of our model chain (section 4): Task 1 from LightGBM residual models and whole-day U-Nets
+  followed by a chain of calibration stages, Task 2 queue predictions from LightGBM, CatBoost, CNN and BiLSTM members,
+  Task 4 from the official NNLS reference.
+* **V86** is V84 with 94 Task 2 `queue_pred` cells flipped by a spatio-temporal queue guard that a team member ran on
+  V84 (no model is retrained): 62 validation / 32 private cells in 18 windows; 63 queued → not queued, 31 not queued
+  → queued. The zip holds one member `submission.csv` (6,980,503 rows); every other byte of it equals V84's, so the
+  Task 1 and Task 4 rows, and the Task 3 score computed from Task 1, are those of V84. The guard is described in the
+  report, section *Final queue guards*.
+* The last stages of the pipeline also write `work/submissions/v87_combined.zip`, a second file we selected (V86 plus
+  10 cells of a V85 history guard), which scored lower on the private leaderboard. It is mentioned below only where
+  the pipeline builds or checks it.
 
 ## 1. Requirements
 
@@ -56,13 +66,14 @@ Data tab and unzip it so that the folder `kaggle_public/` (containing `README.md
 <package root>/
   README.md, LICENSE
   MANIFEST.json             <- size and SHA-256 of every shipped file
-  report/main.pdf
+  report/main.pdf           <- method, validation and compliance disclosures
+  report/leaderboard.png    <- private leaderboard screenshot (4th place)
   kaggle_public/            <- official release (not shipped)
   clean_data/               <- written by stage data
   work/                     <- code, trained models, frozen decision files, requirements.txt, ENVIRONMENT.txt
     reference/t2_queue/     <- copies of the five original Task 2 queue files (compared by t2_check)
-    reference/final/        <- copies of the submitted V87 and V86 (compared by verify)
-    results/final_v86_v87/  <- frozen V86 and V87 change lists (read by stage final)
+    reference/final/        <- copies of the submitted final files (compared by verify)
+    results/final_v86_v87/  <- frozen guard change lists (read by stage final)
     v85_history_guard/      <- the team member's V85 hand-off: guard code and frozen inputs (run by stage v85)
   trafficflowbench-public-main/   <- the official Task 4 builder used by stage t4 (shipped subset)
 ```
@@ -79,16 +90,18 @@ python work/run_all.py --plan              # stage table: commands, outputs, GPU
 python work/run_all.py --list-frozen       # shipped inputs of each stage (exists / size / SHA-256 prefix)
 python work/run_all.py --run-all --force   # rebuild everything in order (log: work/results/run_all_log.csv)
 python work/run_all.py --run-all --tolerant   # recommended on any GPU other than ours (section 5)
-python work/run_all.py --run verify        # repeat only the comparison of V87 and V86 (last stage of --run-all)
+python work/run_all.py --run verify        # repeat only the comparison with the submitted files (last stage of --run-all)
 python work/run_all.py --check             # SHA-256 of every output vs the manifests in work/results/ (see below)
 ```
+
+V86 is written to `work/submissions/v86_spacetime_guard.zip`.
 
 * `--from <stage>` runs from a stage to the end; `--run <stage ...>` runs single stages (in pipeline order).
 * `--force` runs stages marked `todo` or `partial`; since our clean-copy run all 36 stages are marked `verified`
   (section 5), so it is no longer needed, but it does no harm.
 * `--check`: the package ships no result manifests, so in a fresh package `--check` compares each output with the
   hash its own builder recorded during this run, where there is one. This is a self-consistency check, not a
-  comparison with the development build; only `verify` compares V87 and V86 with the submitted files. `--ref-root`
+  comparison with the development build; only `verify` compares the final files with the submitted ones. `--ref-root`
   adds a content comparison of every stage output with a reference tree (with `--check`, or after each stage of a run).
 * `--resume` (with `--run-all`, `--from` or `--run`) skips stages that already ended without error (marker
   `work/results/run_all_done/<stage>.ok`). It skips whole stages only: an interrupted stage restarts from its first
@@ -102,36 +115,35 @@ python work/run_all.py --check             # SHA-256 of every output vs the mani
   console window; continue later with `--resume`. A closed lid, Sleep or signing out still pauses or stops the run.
   Keep the machine on mains power.
 * `--retrain` first runs a stage's optional GPU training commands (`retrain $` lines in `--plan`, about 7 h in
-  total). Only `t1_v59blk`, `t1_v61b3` and `t2_v72` have them; none is needed to reproduce V87 and V86. The U-Net
+  total). Only `t1_v59blk`, `t1_v61b3` and `t2_v72` have them; none is needed to reproduce V86. The U-Net
   training commands refuse to overwrite existing nets, so first move the stage's shipped nets out of `work/models/`
   (`t1_unet_fold*_v59bs.pt`, `*_v59ss_p0.pt`, `*_v59ss_p1.pt` for `t1_v59blk`; `*_v61b3_s1.pt`, `*_v61b3_ext.pt`
   for `t1_v61b3`). The `t1_v61b3` retraining reads the `train_runs.csv` written by the `t1_v59blk` retraining. The
   `t2_v72` fine-tunes start from the shipped base nets (leave them in place) and overwrite the four shipped
   `*_hw96all.pt` files without asking; keep a copy. Retraining is not guaranteed to be bit-exact (see section 6).
 
-Our clean-copy check ran `python work/run_all.py --run-all --resume --force --ref-root <development tree>` in a copy
-of the package next to the release. `--ref-root` compares each stage's outputs by content with the development tree
-as the stage ends (outputs without a counterpart there print `no reference copy`); `verify` then compares V87 and
-V86 with the submitted files in that tree instead of `work/reference/final/`.
+**Runtime.** Measured on the reference machine without retraining (the stage times of `--plan`, interruptions
+excluded): 18.2 h of stage time in total (3.6 h of it in the six GPU stages); by group: data cleaning 37 min, Task 4
+reference 69 min, Task 1 production chain 81 min, calibration stages `v51_zip` … `t1_v69` 9.3 h (`t1_v52` alone
+4.4 h), late Task 1 stages `t1_v73` … `t1_v84` 5.0 h, the three Task 2 stages (`t2_queue`, `t2_v72`, `t2_check`)
+40 min, `v85`, `final` and `verify` 6 min.
 
-Runtime, measured in that clean-copy run on the reference machine without retraining (the stage times of `--plan`,
-interruptions excluded): 18.2 h of stage time in total (3.6 h of it in the six GPU stages); by group: data cleaning
-37 min, Task 4 reference 69 min, Task 1 production chain 81 min, calibration stages `v51_zip` … `t1_v69` 9.3 h
-(`t1_v52` alone 4.4 h), late Task 1 stages `t1_v73` … `t1_v84` 5.0 h, the three Task 2 stages (`t2_queue`, `t2_v72`,
-`t2_check`) 40 min, `v85`, `final` and `verify` 6 min. The run itself went from 4 to 8 November. It was resumed with
-`--resume` after interrupted consoles (closed windows or a stray Ctrl+C) and after five stops that led to changes in
-`run_all.py` or to new scripts: a working folder that `t2_queue` needs (now created by `run_all.py`), `t2_check`
-placed before V84 existed (now after `t1_v84`), the feature-alignment file that `build_v77.py` reads (now written by
-the new `audit_v77_feature_alignment.py`, whose first version stopped the run once more because it counted NaN in the
-same cells as unequal), and `final` reached before stage `v85` was added. A 6.3 h standby pause inside `merge_v60`
-only delayed the run (excluded from the times above). During the run no stage script was changed after its stage
-had passed; the
-only code files under `work/` that changed after the run began are
+**Our clean-copy run.** Our check ran `python work/run_all.py --run-all --resume --force --ref-root <development tree>`
+in a copy of the package next to the release. `--ref-root` compares each stage's outputs by content with the
+development tree as the stage ends (outputs without a counterpart there print `no reference copy`); `verify` then
+compares the final files with the submitted files in that tree instead of `work/reference/final/`. The run went from
+4 to 8 November. It was resumed with `--resume` after interrupted consoles (closed windows or a stray Ctrl+C) and
+after five stops that led to changes in `run_all.py` or to new scripts: a working folder that `t2_queue` needs (now
+created by `run_all.py`), `t2_check` placed before V84 existed (now after `t1_v84`), the feature-alignment file that
+`build_v77.py` reads (now written by the new `audit_v77_feature_alignment.py`, whose first version stopped the run
+once more because it counted NaN in the same cells as unequal), and `final` reached before stage `v85` was added. A
+6.3 h standby pause inside `merge_v60` only delayed the run (excluded from the times above). During the run no stage
+script was changed after its stage had passed; the only code files under `work/` that changed after the run began are
 `run_all.py`, `audit_v77_feature_alignment.py` and the scripts of the stages added then, `build_v85_history_guard.py`
-and `build_final_v86_v87.py` (with the hand-off folder `work/v85_history_guard/`). After the run, on 9 November, the tolerant mode of
-section 5 changed the checks in seven files (`repro_check.py`, `run_all.py`, `t2_final_queue.py`, `t2_final_ongoing.py`, `t2_v71_april.py`, `build_v85_history_guard.py`, `build_final_v86_v87.py`); the default
-path is unchanged, and the changed steps were re-run in the clean copy (section 5). The final files are written to
-the paths in the table above.
+and `build_final_v86_v87.py` (with the hand-off folder `work/v85_history_guard/`). After the run, on 9 November, the
+tolerant mode of section 5 changed the checks in seven files (`repro_check.py`, `run_all.py`, `t2_final_queue.py`,
+`t2_final_ongoing.py`, `t2_v71_april.py`, `build_v85_history_guard.py`, `build_final_v86_v87.py`); the default path
+is unchanged, and the changed steps were re-run in the clean copy (section 5).
 
 ## 4. What the stages do
 
@@ -151,39 +163,37 @@ the paths in the table above.
    stages patch the previous zip.
 5. `t2_v72` — April ongoing rows from the March-fine-tuned members (55 April queue cells of the V69 zip).
 6. `t1_v73` … `t1_v84` — late Task 1 residual corrections (factor and ridge models and LightGBM boosters, each with
-   its held-out checks), giving **V84**, the end of the model chain and the base of both final files.
+   its held-out checks), giving **V84**, the end of the model chain and the base of V86.
 7. `t2_check` — read-only Task 2 checks of V84: re-derives all 160 official windows from the models cell by cell,
    checks the two queue files V84 was built from (`work/sub/queue_validation_v54_onset.csv`,
    `queue_private_v72_april.csv`) against V84's queue rows, runs the truncation (as-of) check that deletes every
    row after each window's origin, and compares the five `t2_queue` files cell by cell with
    `work/reference/t2_queue/`. It needs V84, so it runs after `t1_v84`. These checks cover V84's model-built queue
-   rows; V86 and V87 differ from them in the 94 / 104 guard cells (the 10 V85 cells recomputed by stage `v85`, all
-   applied by stage `final`).
-8. `v85` — recomputes the 10 V85 cells on the rebuilt V84 with the team member's own code
-   (`work/build_v85_history_guard.py` around `work/v85_history_guard/`, section 7): on the `constr` official ongoing
-   windows the guard replays the V84-era CPU ensemble from frozen probabilities with the selection-rule conditioning,
-   finds the 30 training-period histories (June 2030 – February 2031) closest to the window's own history up to and
-   including its origin T, and flips a cell from not queued to queued only where decoding 0.9 × replay probability +
-   0.1 × analogue queue share, instead of the replay probability alone, turns it on (first step kept fixed), V84 has 0,
-   at least 20 analogues observe it and their queue share exceeds the replay probability by at least 0.30 (12
-   candidates, 10 kept). It asserts that V84's queue rows equal the team member's, the recomputed audit the shipped
-   one (line endings ignored), and the cells both the official V85 list and the V85 rows of the V87 list.
-9. `final` — `work/build_final_v86_v87.py` writes V86 = V84 + the frozen V86 change list and V87 = V84 + the V86
-   list + the `v85` cells (asserted equal to the frozen V87 list), asserting that each listed cell is a V84 queue row
-   with the recorded `before` value and copying all other bytes; the zips are written like the submitted ones (one
-   member `submission.csv`, deflate, 1980 timestamp). The team member describes the V86 guard as correcting V84's
-   queue predictions by spatio-temporal linkage and gating by neighbouring historical observations; flips whose
-   CPU replay disagreed with the submitted base were not applied, and 4 ambiguous flips were blocked. Its code is
-   not shipped, so we cannot show that it uses only data up to each window's origin T (report, section X,
-   disclosure 6); a re-run with the rows after each origin deleted reproduces these 94 recorded cells by
-   construction and does not test them.
-10. `verify` — compares V87 and V86 with the recorded SHA-256 of the submitted files and by content (line by line,
-   line endings reported separately) with `work/reference/final/` (or `--ref-root`); it passes if each file matches
-   either way. In a rebuilt tree it passes by content: from V60 on the rebuilt zips hold the same content as ours
-   but different line ends (521 lines in every full zip, 570 in the two V61 state-only zips; the original V84, V86
-   and V87 end 725 lines in LF and the rest in CRLF, their rebuilds 204), and V86 and V87 inherit this from V84.
+   rows; V86 differs from them only in the 94 guard cells applied by stage `final`.
+8. `v85` — recomputes on the rebuilt V84, with the team member's own code (`work/build_v85_history_guard.py` around
+   `work/v85_history_guard/`, section 7), the 10 cells of the V85 history guard. These cells are not part of V86;
+   they enter only the second file V87. On the `constr` official ongoing windows the guard replays the V84-era CPU
+   ensemble from frozen probabilities with the selection-rule conditioning, finds the 30 training-period histories
+   (June 2030 – February 2031) closest to the window's own history up to and including its origin T, and flips a cell
+   from not queued to queued only where decoding 0.9 × replay probability + 0.1 × analogue queue share, instead of the
+   replay probability alone, turns it on (first step kept fixed), V84 has 0, at least 20 analogues observe it and
+   their queue share exceeds the replay probability by at least 0.30 (12 candidates, 10 kept). It asserts that V84's queue rows equal the team member's, the recomputed audit the shipped one (line
+   endings ignored), and the cells both the official V85 list and the V85 rows of the V87 list.
+9. `final` — `work/build_final_v86_v87.py` writes **V86** = V84 + the frozen V86 change list (and V87 = V86 + the
+   `v85` cells, asserted equal to the frozen V87 list), asserting that each listed cell is a V84 queue row with the
+   recorded `before` value and copying all other bytes; the zips are written like the submitted ones (one member
+   `submission.csv`, deflate, 1980 timestamp). The team member describes the V86 guard as correcting V84's queue
+   predictions by spatio-temporal linkage and gating by neighbouring historical observations; flips whose CPU replay
+   disagreed with the submitted base were not applied, and 4 ambiguous flips were blocked. Its code is not shipped,
+   so we cannot show that it uses only data up to each window's origin T (report, section X, disclosure 6); a re-run
+   with the rows after each origin deleted reproduces these 94 recorded cells by construction and does not test them.
+10. `verify` — compares the final files with the recorded SHA-256 of the submitted files and by content (line by
+   line, line endings reported separately) with `work/reference/final/` (or `--ref-root`); it passes if each file
+   matches either way. In a rebuilt tree it passes by content: from V60 on the rebuilt zips hold the same content as
+   ours but different line ends (521 lines in every full zip, 570 in the two V61 state-only zips; the original V84
+   and V86 end 725 lines in LF and the rest in CRLF, their rebuilds 204), and V86 inherits this from V84.
 
-A registered private-only hedge of V84 was built but not selected; it is not part of V86 or V87.
+A registered private-only hedge of V84 was built but not selected; it is not part of V86.
 
 **Preprocessing** (stage `data`, no randomness). `work/clean_data.py` turns the release into one table per corridor
 and split; nothing is deleted and no missing value is filled. Steps: merge the network tables (links,
@@ -200,40 +210,41 @@ model features built on this layer are described in the report (sections *Task 1
 
 * **Full clean-copy run (2026-11-04 … 11-08), all 36 stages:** a copy of this package next to the official release,
   without any development output, ran `--run-all` (resumed as described in section 3) and ended with `verify`
-  passing: the rebuilt V87 and V86 are content-identical to the submitted files (6,980,504 lines each; SHA-256
-  differs because 521 lines carry CRLF instead of LF, the same lines as in the rebuilt V84). From `t1_base` on, every
-  stage compared its outputs with the development tree (`--ref-root`); stage `data` writes a folder, which
-  `--ref-root` skips, so its 40 parquet files and `data_dictionary.csv` were compared by SHA-256 after the run, and
-  stage `t4` compared the rebuilt Task 4 reference with the shipped copy itself. The cleaned parquet files, the Task 4
-  reference, every state and queue CSV and every zip that the development tree still holds (V51, V60 … V84, V86,
-  V87) are content- or byte-identical, and so are the LightGBM models refitted inside the stages and the ridge
-  coefficients of `t1_v81` / `t1_v82` (bytes). The twelve intermediate zips of V52 … V59 are no longer kept in the
-  development tree and were not compared directly; their state CSVs were, and V60 and every later zip, which carry
-  their rows forward, are content-identical. Among the compared outputs, byte differences occur only in result files
-  that record timings, paths, hashes or float noise: the `seconds` fields of `clean_data/cleaning_report.*`,
-  `t1_v59blk`'s `crossfit_ss_choice.json` and the `v85` manifest (which also records the SHA-256 of the rebuilt V84);
-  float differences of at most 1.2e-13 in the `t1_v73` and `t1_v74` coefficients and summaries; and the as-of log of
-  `t2_check` (per-window seconds, absolute data paths, and an optional column of the development run). Diagnostic
-  result files that are not stage outputs (for example the manifests of the zip builders) also differ in recorded
-  zip hashes and line-end counts. `run_all.py --plan` marks every stage `verified` and lists these differences in its
-  notes.
-* Task 2: the queue files written from the models are byte-identical to the originals, all 160 official windows of
-  V84 re-derive with 0 mismatching cells, and the truncation check changes 0 of 174,000 cells (also in the clean
+  passing: the rebuilt V86 is content-identical to the submitted file (6,980,504 lines; SHA-256 differs because 521
+  lines carry CRLF instead of LF, the same lines as in the rebuilt V84), and so is the second final file. From
+  `t1_base` on, every stage compared its outputs with the development tree (`--ref-root`); stage `data` writes a
+  folder, which `--ref-root` skips, so its 40 parquet files and `data_dictionary.csv` were compared by SHA-256 after
+  the run, and stage `t4` compared the rebuilt Task 4 reference with the shipped copy itself. The cleaned parquet
+  files, the Task 4 reference, every state and queue CSV and every zip that the development tree still holds (V51,
+  V60 … V84 and the final files) are content- or byte-identical, and so are the LightGBM models refitted inside the
+  stages and the ridge coefficients of `t1_v81` / `t1_v82` (bytes). The twelve intermediate zips of V52 … V59 are no
+  longer kept in the development tree and were not compared directly; their state CSVs were, and V60 and every later
+  zip, which carry their rows forward, are content-identical. Among the compared outputs, byte differences occur only
+  in result files that record timings, paths, hashes or float noise: the `seconds` fields of
+  `clean_data/cleaning_report.*`, `t1_v59blk`'s `crossfit_ss_choice.json` and the `v85` manifest (which also records
+  the SHA-256 of the rebuilt V84); float differences of at most 1.2e-13 in the `t1_v73` and `t1_v74` coefficients and
+  summaries; and the as-of log of `t2_check` (per-window seconds, absolute data paths, and an optional column of the
+  development run). Diagnostic result files that are not stage outputs (for example the manifests of the zip
+  builders) also differ in recorded zip hashes and line-end counts. `run_all.py --plan` marks every stage `verified`
+  and lists these differences in its notes.
+* **Task 2:** the queue files written from the models are byte-identical to the originals, all 160 official windows
+  of V84 re-derive with 0 mismatching cells, and the truncation check changes 0 of 174,000 cells (also in the clean
   copy).
-* Final files: the shipped `build_v85_history_guard.py` recomputes the guard's audit identically and re-derives its
-  10 cells (with numpy 1.26.4 / pandas 2.0.3), on the original V84 in the development tree and on the rebuilt V84 in
-  the clean copy; `final` writes V86 and V87 byte-identical to the submitted files from the original V84 and
-  content-identical from the rebuilt one.
-* Seven builders on the chain (`build_v77.py`, `build_v78_step.py`, `build_v79_flow.py`, `build_v81_cmode.py`,
-  `build_v82_interactions.py`, `build_v83_flow.py`, and `build_v84_observation.py` through the `build()` of
-  `build_v84_context.py`) check the SHA-256 of their input zip against the development build (`build_v81_density.py`
-  holds the same check, but `build_v81_cmode.py` replaces the `prepare()` that contains it). A rebuilt zip does not
-  have those bytes, even on the development machine: the original zips hold a historical mix of CRLF and LF line ends
-  that the rebuild repeats only in part (the clean-copy log reports `line endings differ on 521 lines` for V60 and
-  every later full zip, 570 for the two V61 state-only zips, with identical content), and
-  another platform or zlib version can add further byte differences. The mismatch warning is therefore expected and
-  the run continues; every value-replay assertion inside the builders still applies. `TFB_STRICT=1` makes the hash
-  checks fatal, which only makes sense on the original development zips (a rebuild would stop at `build_v77`).
+* **Final files:** `final` writes V86 byte-identical to the submitted file from the original V84 and
+  content-identical from the rebuilt one. The shipped `build_v85_history_guard.py` (used only for V87) recomputes the
+  V85 guard's audit identically and re-derives its 10 cells (with numpy 1.26.4 / pandas 2.0.3), on the original V84
+  in the development tree and on the rebuilt V84 in the clean copy.
+* **Input-hash warnings are expected.** Seven builders on the chain (`build_v77.py`, `build_v78_step.py`,
+  `build_v79_flow.py`, `build_v81_cmode.py`, `build_v82_interactions.py`, `build_v83_flow.py`, and
+  `build_v84_observation.py` through the `build()` of `build_v84_context.py`) check the SHA-256 of their input zip
+  against the development build (`build_v81_density.py` holds the same check, but `build_v81_cmode.py` replaces the
+  `prepare()` that contains it). A rebuilt zip does not have those bytes, even on the development machine: the
+  original zips hold a historical mix of CRLF and LF line ends that the rebuild repeats only in part (the clean-copy
+  log reports `line endings differ on 521 lines` for V60 and every later full zip, 570 for the two V61 state-only
+  zips, with identical content), and another platform or zlib version can add further byte differences. The mismatch
+  warning is therefore expected and the run continues; every value-replay assertion inside the builders still
+  applies. `TFB_STRICT=1` makes the hash checks fatal, which only makes sense on the original development zips (a
+  rebuild would stop at `build_v77`).
 * **Another GPU model: use `--tolerant`.** The Task 2 BiLSTM / CNN members run in bf16, and bf16 kernels differ
   between GPU models, so a few queue cells can flip on a GPU other than ours (RTX 4070 Laptop). The award rule's 1%
   tolerance on the private score absorbs a few cells, but by default the run stops at the first check that compares
@@ -245,23 +256,23 @@ model features built on this layer are described in the report (sections *Task 1
   variable `TFB_TOLERANT=1`) each of these prints a line starting with `TOLERATED` with the number of differing cells
   and the run goes on: the Task 2 rows use the decisions recomputed on your GPU; `v85` writes the recorded V85 cells
   if its recomputation differs or stops, and `final` sets every listed guard cell to its recorded `after` value
-  (the submitted one), as it already does for the V86 cells; `verify` reports the differing lines of V87 / V86 and
-  passes. Structural checks (row sets, keys, counts) and the as-of truncation check stay fatal. `grep TOLERATED` in
-  the log lists every tolerated difference. If a default run already stopped at one of these checks, delete the
+  (the submitted one), as it already does for the V86 cells; `verify` reports the differing lines of the final files
+  and passes. Structural checks (row sets, keys, counts) and the as-of truncation check stay fatal. `grep TOLERATED`
+  in the log lists every tolerated difference. If a default run already stopped at one of these checks, delete the
   partial outputs of that stage (section 3) and continue with `--run-all --resume --tolerant`. We tested this mode
   on our machine (2026-11-09) by changing recorded V48 / V51 decisions and two V84 queue cells on purpose: every
   check reported the difference and the run continued; the rebuilt Task 2 queue files and V72 outputs stayed
   byte-identical (the decisions recomputed on our GPU are the submitted ones), `v85` wrote the recorded V85 cells,
-  `final` set the guard cells to their recorded values, and V87 / V86 then differed from the submitted files only
-  in the changed V84 cell that lies outside the guard lists, as a flip on another GPU would. The default mode
+  `final` set the guard cells to their recorded values, and the final files then differed from the submitted ones
+  only in the changed V84 cell that lies outside the guard lists, as a flip on another GPU would. The default mode
   stopped at each of these checks. On our GPU no check fires, so both modes give the same files.
 * **A newly generated month.** The organisers also plan to run the Task 2 code of the review pool on a newly
   generated month. Our Task 2 rules and models are code, but the package is organised around the two competition
   months: the April members are fine-tuned on March, several stages compare their decisions with those recorded
-  for March and April (`--tolerant` turns these into reported differences), and the two guard change lists
-  address cells of the competition months by submission id, so they do not carry over. We have not run the
-  package on another month; there, the model-built queue rows of V84 are the meaningful Task 2 output, and
-  stages `v85` and `final` do not apply.
+  for March and April (`--tolerant` turns these into reported differences), and the guard change lists address
+  cells of the competition months by submission id, so they do not carry over. We have not run the package on
+  another month; there, the model-built queue rows of V84 are the meaningful Task 2 output, and stages `v85` and
+  `final` do not apply.
 
 ## 6. Random seeds
 
@@ -289,7 +300,7 @@ and `t2_rnn.py` it is the index s of a network in its ensemble, e.g. `_g0_s1` wa
 | Task 2 CNN / BiLSTM | `t2_cnn.py`, `t2_rnn.py`, `t2_rnn_march.py` | `2026 + s`; March fine-tunes `2026 + 100 + --seed` = 2126 (the recorded commands use the default `--seed 0` and pick the base network with `--base`); CNN cuDNN deterministic, BiLSTM not | retrain |
 | Task 2 onset random forest (D7_I405_N) | `t2_v30_onset.py`, fitted by `t2_final_onset.py` | scikit-learn `random_state=3030` (180 trees, `n_jobs=2`; refitted on train in `t2_queue` and `t2_check`, no shipped model) | run |
 | Task 2 selection-rule conditioning (V52, V72) | `t2_v52_selrule.py` | Monte Carlo with K = 20,000 draws, `seed = crc32(window_id)` per window | run |
-| V85 history guard: conditional sampling of the CPU replay | `v85_history_guard/replay/work/analog_gate_official_audit.py` (`v85_decoders.samples`) | K = 20,000 conditional samples, `default_rng(crc32(window_id))` per window | run (`v85`) |
+| V85 history guard (V87 only): conditional sampling of the CPU replay | `v85_history_guard/replay/work/analog_gate_official_audit.py` (`v85_decoders.samples`) | K = 20,000 conditional samples, `default_rng(crc32(window_id))` per window | run (`v85`) |
 | V86 spatio-temporal guard | not shipped (frozen change list) | not available (code not shipped) | none on the default path |
 
 The LightGBM models that the default path fits (from V57 on, inside their stages) and the shipped V30 stack and V81
@@ -343,8 +354,8 @@ V27 cache and reach no cell.
   its `SHA256SUMS.txt` are not shipped (the other listed files match), so its own `rebuild_v85.py` and
   `replay_gate_from_cache.py` do not run as shipped; stage `v85` writes those queue rows from the rebuilt V84, checks
   their hash (line endings ignored) and runs the audit script directly. Its author released it under our MIT
-  License (`LICENSE`). The V86 guard's code is not
-  included (its decisions ship as the frozen change list of stage `final`).
+  License (`LICENSE`). The V86 guard's code is not included (its decisions ship as the frozen change list of stage
+  `final`).
 * **Libraries.** numpy, pandas, scipy, scikit-learn, PyTorch (BSD); LightGBM (MIT); pyarrow, CatBoost, XGBoost
   (Apache-2.0); matplotlib for the report figures only (PSF-based license); all open source. The CUDA 12.1 build of
   PyTorch comes with NVIDIA's CUDA and cuDNN runtime libraries, which are freely redistributable but not open source.
